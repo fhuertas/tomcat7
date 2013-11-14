@@ -75,6 +75,12 @@ class tomcat7::install {
   tomcat7::mkdir { 'create_persistent_dir' : 
     dir =>  "${mydir}", 
   }
+  # Create the catalina home
+  tomcat7::mkdir {'catalina_home_1' : 
+    dir  => "$in_catalina_home", 
+    owner => "$in_tomcat_user",
+    group => "$in_tomcat_group", 
+  }
   # check if tar is defined
   if ! defined(Package['tar']) {
     package { 'tar':
@@ -94,12 +100,6 @@ class tomcat7::install {
     content  => template("$template_file") ,
   }
 
-  # Create the catalina home
-  tomcat7::mkdir {'catalina_home_1' : 
-    dir  => "$in_catalina_home", 
-    owner => "$in_tomcat_user",
-    group => "$in_tomcat_group", 
-  }
 
   file { 'tomcat7-bash-file':
     ensure  => file,  
@@ -142,5 +142,8 @@ class tomcat7::install {
     cwd         => "${mydir}", 
     require     => File['tomcat7-bash-file'], 
     refreshonly => true, 
+  }
+  notify {"Tomcat 7 configuered" : 
+    require => Exec["/${mydir}/deploy-tomcat.sh"], 
   }
 }

@@ -9,8 +9,8 @@ class tomcat7 (
 
   $information = hiera ('service_path') 
 
-  include tomcat7::params 
-  include tomcat7::install
+  class{"tomcat7::params" : }
+  class{"tomcat7::install" : }
 #  include tomcat7::deploy
 
 #  notify { "${tomcat7::params::tomcat_package}": }
